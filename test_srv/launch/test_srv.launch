@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="service_server" pkg="test_srv" type="test_srv" respawn="false" output="screen">
+
+  </node>
+
+</launch>
