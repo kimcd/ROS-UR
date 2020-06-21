@@ -1,3 +1,18 @@
+/* 
+UR5_MOTION_VIZ node subscribes to /traj_data. The incoming trajectory
+is checked for self-collision on the UR5. The output is a ROS_INFO message 
+indicating whether a particular set of joint data is in self-collision or not.
+
+This code borrows heavily from planning_scene_tutorial.cpp 
+
+TODO: 
+-turn into a service 
+-report results of collision to a topic as a boolean 
+-remove dependence on ur5_moveit_config demo.launch 
+
+C. KIM, JHUAPL 14June2020
+*/
+
 #include "ros/ros.h"
 #include "ur5_collision_srv/ur5CollisionSrv.h"
 

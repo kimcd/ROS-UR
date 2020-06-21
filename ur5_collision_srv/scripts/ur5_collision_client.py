@@ -1,9 +1,30 @@
 #! /usr/bin/env python
 
-#### TO DO 
-# put read_goal_traj(filename) as a separate definition
-# how to make "import_trajectory.py" a global function? it must belong in the same folder as this function now.
-# how to tell this function where to look for the .csv file. it must belong in the same folder as this function now.
+"""ur5_collision_client
+
+This function accepts a commandline argument for a filename and 
+initializes a ROS client that will parse .csv trajectory data 
+and send to the service server as a moveit_msgs/RobotTrajectory type. 
+
+This file contains the following functions: 
+
+    *has_header - returns a bool with TRUE when the .csv trajectory file
+		  has a header and FALSE when it does not. This allows 
+		  read_goal_traj to extract the appropriate columns 
+
+    *read_goal_traj - uses csv reader to extract trajectory data from the 
+		      .csv file and return as variables traj_t and traj_q
+
+    *robot_traj_generate - uses traj_t and traj_q to generate a 
+			   moveit.msgs/RobotTrajectory message and return 
+   			   it as the variable path
+
+    *main - the main function
+
+TODO: add functionality to search for .csv files in a user-specified path
+
+C. KIM, JHUAPL 21JUNE2020
+"""
 
 import csv
 import numpy
@@ -43,9 +64,9 @@ def read_goal_traj(filename):
             if n_col == 6: 
 	        traj_t = []
  		traj_q = traj_data 
-    	    #elif n_col == 7: 
-		#traj_q = traj.data[:,1:7]
-		#traj_t = traj_data[:,0]
+    	    # elif n_col == 7: 
+		# traj_q = traj.data[:,1:7]
+		# traj_t = traj_data[:,0]
     return traj_t, traj_q
 
 def robot_traj_generate(filename):
@@ -61,7 +82,7 @@ def robot_traj_generate(filename):
          path.joint_trajectory.points.append(JointTrajectoryPoint(positions=traj_q[i,:],
                                              velocities=[0]*6, 
                                              time_from_start=rospy.Duration(d)))
-         d += .001 #seconds between each point
+         d += .001  # seconds between each point
     return path
 
 #    rate = rospy.Rate(1)
@@ -84,7 +105,9 @@ def ur5_collision_client(filename):
     try:
         ur5_collision_check = rospy.ServiceProxy('ur5_collision_check', ur5CollisionSrv)
         ur5_collision_check(path)
-        print("I sent something")
+	print(" ")
+        print("Path has been sent to collision check service.")
+	print(" ")
 	#resp1 = ur5_collision_check
 	#return resp1.result
     except rospy.ServiceException: 
@@ -103,5 +126,6 @@ if __name__=='__main__':
     else:
 	print(usage())
 	sys.exit(1)
-    print "Requesting collision check on: ", filename
+    print(" ")
+    print "Requesting collision check on:", filename
     ur5_collision_client(filename)
