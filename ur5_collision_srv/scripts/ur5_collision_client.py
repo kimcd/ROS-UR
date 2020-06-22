@@ -22,6 +22,7 @@ This file contains the following functions:
     *main - the main function
 
 TODO: add functionality to search for .csv files in a user-specified path
+      rather than the folder the user is in
 
 C. KIM, JHUAPL 21JUNE2020
 """
@@ -104,7 +105,8 @@ def ur5_collision_client(filename):
     rospy.wait_for_service('ur5_collision_check')
     try:
         ur5_collision_check = rospy.ServiceProxy('ur5_collision_check', ur5CollisionSrv)
-        ur5_collision_check(path)
+        resp = ur5_collision_check(path)
+        return resp.result
 	print(" ")
         print("Path has been sent to collision check service.")
 	print(" ")

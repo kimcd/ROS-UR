@@ -4,6 +4,13 @@ project(ur5_collision_srv)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
+find_package(Eigen3 REQUIRED)
+
+# Eigen 3.2 (Wily) only provides EIGEN3_INCLUDE_DIR, not EIGEN3_INCLUDE_DIRS
+if(NOT EIGEN3_INCLUDE_DIRS)
+  set(EIGEN3_INCLUDE_DIRS ${EIGEN3_INCLUDE_DIR})
+endif()
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -14,7 +21,21 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   moveit_msgs
   trajectory_msgs
+  moveit_core
+  moveit_visual_tools
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  pluginlib
+  geometric_shapes
+  pcl_ros
+  pcl_conversions
+  rosbag
+  tf2_ros
+  tf2_eigen
+  tf2_geometry_msgs
 )
+
+find_package(Boost REQUIRED system filesystem date_time thread)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -107,10 +128,15 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ur5_collision_srv
-#  CATKIN_DEPENDS roscpp
-#  DEPENDS system_lib
+#  LIBRARIES
+  INCLUDE_DIRS
+    ${THIS_PACKAGE_INCLUDE_DIRS}
+  CATKIN_DEPENDS
+    moveit_core
+    moveit_visual_tools
+    moveit_ros_planning_interface
+  DEPENDS
+    EIGEN3
 )
 
 ###########
@@ -119,9 +145,21 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
+
+include_directories(
+  SYSTEM 
+    ${THIS_PACKAGE_INCLUDE_DIRS} 
+    ${Boost_INCLUDE_DIR} 
+    ${EIGEN3_INCLUDE_DIRS}
+)
+
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+)
+
+link_directories(
+  ${catkin_LIBRARY_DIRS}
 )
 
 ## Declare a C++ library
@@ -152,6 +190,7 @@ add_dependencies(ur5_collision_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catk
 ## Specify libraries to link a library or executable target against
 target_link_libraries(ur5_collision_server
   ${catkin_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 #############
