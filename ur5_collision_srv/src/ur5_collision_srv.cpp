@@ -4,10 +4,9 @@ This service checks for UR5 collision
 
 This code borrows from planning_scene_tutorial.cpp 
 
-TODO: turn into a service 
-TODO: report results of collision to a topic as a boolean 
 TODO: remove dependence on ur5_moveit_config demo.launch
-TODO: fix server warning about unloading library  
+TODO: fix server warning about unloading library
+TODO: store joints in collision as an array  
 
 C. KIM, JHUAPL 21June2020
 */
@@ -93,9 +92,9 @@ bool ur5_collision_callback(ur5_collision_srv::ur5CollisionSrv::Request  &req,
     // if there's a collision, 1) throw a collision flag 2) return result as true & joint data
     {
       self_collision_flag = true; 
-      std::cout << "Joint Angle Set " << i+1 << ":";
-      std::cout << "Is in self collision";
-      std::cout << c_res.collision << std::endl;
+      std::cout << "Joint Angle Set " << i+1 << ": ";
+      std::cout << "Is in self collision." << std::endl;
+      //std::cout << c_res.collision << std::endl;
 
      }  // end if statement
       //std::cout << c_res.collision; 
@@ -105,17 +104,17 @@ bool ur5_collision_callback(ur5_collision_srv::ur5CollisionSrv::Request  &req,
 
     if (self_collision_flag) 
     {
-      std::cout << "there was collision";
+      ROS_INFO("There is self-collision.");
       res.result = true; 
     } 
       else
       {
-        std::cout << "there was no collision";
+        ROS_INFO("There is no self-collision.");
         res.result = false;    
       } 
   //return all data points that are in collision
 
-  ROS_INFO("sending back response");
+  ROS_INFO("Sending back response.");
   return true;  // what do here?
 }  // end function
 

@@ -119,10 +119,6 @@ def usage():
     return "Enter Valid .csv File."
 
 if __name__=='__main__':
-    #try:
-    #    publish_traj()
-    #except rospy.ROSInterruptException:
-    #    pass
     if len(sys.argv) == 2:
         filename = sys.argv[1]
     else:
@@ -130,4 +126,8 @@ if __name__=='__main__':
 	sys.exit(1)
     print(" ")
     print "Requesting collision check on:", filename
-    ur5_collision_client(filename)
+    if ur5_collision_client(filename): 
+        print("This trajectory contains self-collision.")
+    else: 
+	print("This trajectory does not contain self-collision.")
+    
