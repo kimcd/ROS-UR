@@ -36,18 +36,19 @@ bool ur5_collision_callback(ur5_collision_srv::ur5CollisionSrv::Request  &req,
   std::vector<int>::size_type num_data_points = req.trajectory.joint_trajectory.points.size(); 
   for (unsigned i = 0; i<num_data_points; i++)
   {
-      std::vector<double> joint_angle = {req.trajectory.joint_trajectory.points[i].positions[0], 
-  	                           	 req.trajectory.joint_trajectory.points[i].positions[1], 
- 					 req.trajectory.joint_trajectory.points[i].positions[2], 
-                                         req.trajectory.joint_trajectory.points[i].positions[3], 
-                                         req.trajectory.joint_trajectory.points[i].positions[4], 
-                                         req.trajectory.joint_trajectory.points[i].positions[5]
-                                         };
-      
-      std::cout << "Joint Angle Set " << i+1 << ": ["; 
-      for(int i=0; i < joint_angle.size(); i++)
-        std::cout <<joint_angle.at(i); 
-        std::cout << "] \n";  
+    // STORE JOINT DATA 
+    std::vector<double> joint_angle = {req.trajectory.joint_trajectory.points[i].positions[0], 
+  	                               req.trajectory.joint_trajectory.points[i].positions[1], 
+ 				       req.trajectory.joint_trajectory.points[i].positions[2], 
+                                       req.trajectory.joint_trajectory.points[i].positions[3], 
+                                       req.trajectory.joint_trajectory.points[i].positions[4], 
+                                       req.trajectory.joint_trajectory.points[i].positions[5]
+                                       };
+    // PRINT JOINT DATA  
+    std::cout << "Joint Angle Set " << i+1 << ": ["; 
+    for(int i=0; i < joint_angle.size(); i++)
+      std::cout <<joint_angle.at(i); 
+      std::cout << "] \n";  
   }
 
   ROS_INFO("sending back response");
